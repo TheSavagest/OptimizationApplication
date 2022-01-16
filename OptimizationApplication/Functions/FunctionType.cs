@@ -2,5 +2,5 @@
 
 internal static class FunctionType
 {
-    internal const string ShiftableND = "ShiftableND";
+    internal const string ND = "ND";
 }
