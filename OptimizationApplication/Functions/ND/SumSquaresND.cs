@@ -2,38 +2,37 @@
 
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using OptimizationApplication.Extensions;
 
 // https://www.sfu.ca/~ssurjano/sumsqu.html
 internal sealed class SumSquaresND : FunctionND
 {
-    public override string Name => FunctionName.SumSquares;
-    private readonly Vector<double> Range;
+    private readonly Vector<double> range;
 
     public SumSquaresND(
-        byte dimension
-    ) : base(
+        byte dimension)
+    : base(
         dimension,
         Vector<double>.Build.Dense(dimension),
         Vector<double>.Build.Dense(dimension, -10),
         Vector<double>.Build.Dense(dimension, 10))
     {
-        Range = Vector<double>.Build.Dense(Generate.LinearRange(1, dimension));
+        range = Vector<double>.Build.Dense(Generate.LinearRange(1, dimension));
     }
+
+    public override string Name => FunctionName.SumSquares;
 
     public override Function Copy()
     {
         return new SumSquaresND(Dimension);
     }
 
-    public override double GetValue(
-        Vector<double> coordinates)
+    public override double GetValue(Vector<double> coordinates)
     {
-        if (coordinates.Count != Dimension)
-            throw new ArgumentException("coordinates.Count != Dimension", nameof(coordinates));
-        if (!coordinates.IsAllInInterval(Lower, Upper))
-            throw new ArgumentException("!coordinates.IsAllInInterval(Lower, Upper)", nameof(coordinates));
+        CheckCoordinates(coordinates);
 
-        return coordinates.PointwisePower(2).PointwiseMultiply(Range).Sum();
+        return coordinates
+            .PointwisePower(2)
+            .PointwiseMultiply(range)
+            .Sum();
     }
 }
